@@ -1,0 +1,159 @@
+name: 小红书
+description: 某些APP要清除缓存或者重新安装拦截广告才会生效！
+compat_arguments:
+  xhs_enable: 'true'
+author: 奶思
+homepage: https://github.com/fmz200/wool_scripts
+dns: {}
+rules:
+- domain:
+    match: ads-img-qc.xhscdn.com
+    policy: REJECT
+- domain:
+    match: ads-video-al.xhscdn.com
+    policy: REJECT
+- domain:
+    match: ads-video-qc.xhscdn.com
+    policy: REJECT
+- domain:
+    match: t-ads.xiaohongshu.com
+    policy: REJECT
+- and:
+    match:
+    - protocol:
+        match: QUIC
+    - domain_suffix:
+        match: xiaohongshu.com
+    policy: REJECT
+rewrites:
+- match: ^https:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v1\/surprisebox\/(?:get_style|open|submit_action)
+  actions:
+  - respond:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: '{}'
+- match: ^https?:\/\/www\.(xiaohongshu|rnote)\.com\/api\/marketing\/box\/trigger\?
+  actions:
+  - respond:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: '{}'
+- match: ^https?:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/note\/guide\?
+  actions:
+  - respond:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: '{}'
+- match: ^https?:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/note\/detailfeed\/preload\?
+  actions:
+  - respond:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: '{}'
+- match: ^https?:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/guide\/user_banner
+  actions:
+  - respond:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: '{}'
+- match: ^https?:\/\/www\.(xiaohongshu|rnote)\.com\/api\/sns\/(v\d+\/ads\/resource|v\d+\/hey\/\w+\/hey_gallery)
+  actions:
+  - respond:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: '{}'
+url_rewrites:
+- match: ^https?:\/\/ci\.(xiaohongshu|rnote)\.com\/system_config\/watermark
+  location: http://reject-img/
+scriptings:
+- http_response:
+    name: 小红书搜索页
+    match: ^https?:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/search\/(banner|hot)_list
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书搜索页
+    match: ^https?:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/search\/(hint|trending)\?
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书搜索页
+    match: ^https?:\/\/(so|edith)\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/search\/notes\?
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书开屏广告
+    match: ^https?:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/system_service\/config\?
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书开屏广告
+    match: ^https?:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/system_service\/splash_config
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书详情页
+    match: ^https?:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/note\/widgets
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书图片视频水印
+    match: ^https?:\/\/(edith|rec|www)\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/note\/(imagefeed|live_photo\/save)
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书图片视频水印
+    match: ^https?:\/\/(edith|rec|www)\.(xiaohongshu|rnote)\.com\/api\/sns\/v\d+\/(followfeed|homefeed)\?
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书图片视频水印
+    match: ^https?:\/\/(edith|rec|www)\.(xiaohongshu|rnote)\.com\/api\/sns\/(v2\/note\/feed|v3\/note\/videofeed)\?
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书图片视频水印
+    match: ^https?:\/\/(edith|rec|www)\.(xiaohongshu|rnote)\.com\/api\/sns\/(v4\/note\/videofeed|v10\/note\/video\/save)\?
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书评论区去水印存储
+    match: ^https:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/(v5\/note\/comment\/list|v3\/note\/comment\/sub_comments)\?
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+- http_response:
+    name: 小红书评论区去水印下载
+    match: ^https:\/\/edith\.(xiaohongshu|rnote)\.com\/api\/sns\/v1\/interaction\/comment\/video\/download\?
+    script_url: https://github.com/fmz200/wool_scripts/raw/main/Scripts/xiaohongshu/xiaohongshu.js
+    timeout: 60
+    body_required: true
+mitm:
+  hostnames:
+    includes:
+    - edith.xiaohongshu.com
+    - www.xiaohongshu.com
+    - ci.xiaohongshu.com
+    - rec.xiaohongshu.com
+    - so.xiaohongshu.com
+    - edith.rnote.com
+    - www.rnote.com
+    - ci.rnote.com
+    - so.rnote.com
+    - rec.rnote.com
